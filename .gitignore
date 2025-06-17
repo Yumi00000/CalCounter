@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pyzw
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Dart
+.dart_tool/
+.packages
+.pub-cache/
+build/
+*.g.dart
+*.freezed.dart
+
+# General
+.env
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+*~
+*.swp
+
+# IDE
+.idea/
+
+# Virtual Environments (adjust if using a different name)
+.venv/
+venv/
+env/
