@@ -1,14 +1,8 @@
-from typing import TYPE_CHECKING
-
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-if TYPE_CHECKING:
-    from sqlalchemy.engine.url import URL
-
 DIR = Path(__file__).absolute().parent.parent.parent
 API_DIR = Path(__file__).absolute().parent.parent
-
 
 
 class EnvBaseSettings(BaseSettings):
@@ -18,6 +12,7 @@ class EnvBaseSettings(BaseSettings):
 class UvicornSettings(EnvBaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
+
 
 class DBSettings(EnvBaseSettings):
     DB_HOST: str = "MOGO_HOST"
