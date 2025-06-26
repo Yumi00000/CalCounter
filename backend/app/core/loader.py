@@ -9,10 +9,6 @@ app.include_router(endpoints.router)
 
 redis_client = Redis(
     connection_pool=ConnectionPool(
-        host=settings.REDIS_HOST,
-        port=settings.REDIS_PORT,
-        password=settings.REDIS_PASS,
-        db=0
+        host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASS, db=0
     ),
 )
-
