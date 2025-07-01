@@ -1,9 +1,8 @@
 from passlib.context import CryptContext
-from motor.motor_asyncio import AsyncIOMotorClient
-
+from pymongo import MongoClient
 from backend.app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["sha256_crypt", "bcrypt"], deprecated="bcrypt",)
 
 
 def hash_password(password: str) -> str:
@@ -14,6 +13,5 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-clint = AsyncIOMotorClient(settings.database_url)
-
-db = clint[settings.DB_NAME]
+client = MongoClient(settings.database_url)
+db = client[settings.DB_NAME]

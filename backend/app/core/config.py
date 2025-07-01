@@ -1,4 +1,6 @@
 from pathlib import Path
+from urllib.parse import quote_plus
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DIR = Path(__file__).absolute().parent.parent.parent
@@ -14,19 +16,25 @@ class UvicornSettings(EnvBaseSettings):
     PORT: int = 8000
 
 
-class DBSettings(EnvBaseSettings):
-    DB_HOST: str = "MOGO_HOST"
-    DB_USER: str = "MONGO_USERNAME"
-    DB_PASS: str = "MONGO_PASSWORD"
-    DB_PORT: str = "MONGO_PORT"
-    DB_NAME: str = "MONGO_NAME"
+
+class DBSettings(BaseSettings):
+    DB_HOST: str
+    DB_USER: str
+    DB_PASS: str
+    DB_PORT: int
+    DB_NAME: str
 
     @property
-    def database_url(self) -> "URL | str":
-        if self.DB_PASS:
-            return f"mongodb://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        return f"mongodb://{self.DB_USER}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    def database_url(self) -> str:
+        user = quote_plus(self.DB_USER)
+        password = quote_plus(self.DB_PASS)
+        host = self.DB_HOST
+        port = self.DB_PORT
+        db_name = self.DB_NAME
 
+        if password:
+            return f"mongodb://{user}:{password}@{host}:{port}"
+        return f"mongodb://{user}@{host}:{port}/{db_name}"
 
 class CacheSettings(EnvBaseSettings):
     REDIS_HOST: str = "redis"

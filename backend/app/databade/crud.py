@@ -1,23 +1,30 @@
-from datetime import timezone
+from datetime import datetime
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
+from pymongo.collection import Collection
+from backend.app.databade.schemas.user import UserCreate, UserInDB
 from backend.app.databade.database import hash_password, verify_password
 
 
-async def create_user(collection: AsyncIOMotorCollection, user_data: dict) -> str:
-    user = {**user_data, "password": hash_password(user_data["password"]), "created": timezone.utc, "active": True}
+def create_user(collection: Collection, user_data: UserCreate) -> str:
+    user = UserInDB(
+        username=user_data.username,
+        email=user_data.email,
+        password=hash_password(user_data.password),
+        active=True,
+        age=user_data.age,
+        created=datetime.utcnow()
+    )
 
-    result = await collection.insert_one(user)
+    result = collection.insert_one(user.dict())
     return str(result.inserted_id)
 
 
-async def get_user_by_username_or_email(collection: AsyncIOMotorCollection, identifier: str):
-    return await collection.find_one({"$or": [{"username": identifier}, {"email": identifier}]})
+def get_user_by_username_or_email(collection: Collection, identifier: str):
+    return collection.find_one({"$or": [{"username": identifier}, {"email": identifier}]})
 
 
-async def auth_user(collection: AsyncIOMotorCollection, identifier: str, password: str):
-    user = await get_user_by_username_or_email(collection, identifier)
+def auth_user(collection: Collection, identifier: str, password: str):
+    user = get_user_by_username_or_email(collection, identifier)
     if user and verify_password(password, user[password]):
         return user
 
