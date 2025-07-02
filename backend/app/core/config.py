@@ -16,7 +16,6 @@ class UvicornSettings(EnvBaseSettings):
     PORT: int = 8000
 
 
-
 class DBSettings(BaseSettings):
     DB_HOST: str
     DB_USER: str
@@ -36,6 +35,12 @@ class DBSettings(BaseSettings):
             return f"mongodb://{user}:{password}@{host}:{port}"
         return f"mongodb://{user}@{host}:{port}/{db_name}"
 
+
+class HashSettings(EnvBaseSettings):
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
+
 class CacheSettings(EnvBaseSettings):
     REDIS_HOST: str = "redis"
     REDIS_PORT: int = 6379
@@ -48,8 +53,8 @@ class CacheSettings(EnvBaseSettings):
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/0"
 
 
-class Settings(DBSettings, CacheSettings, UvicornSettings):
-    SENTRY_DSN: str | None = None
+class Settings(DBSettings, CacheSettings, UvicornSettings, HashSettings):
+    SECRET_KEY: str
 
 
 settings = Settings()

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator, SecretStr
+from pydantic import BaseModel, EmailStr, field_validator, model_validator
 from typing import Optional, Any
 from datetime import datetime
 from pyobjectID import PyObjectId
@@ -9,7 +9,6 @@ collection = db["users"]
 
 
 class UserCreate(BaseModel):
-    # id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     username: str
     email: EmailStr
     password: str
@@ -71,4 +70,11 @@ class UserPublic(BaseModel):
     created: datetime
 
 
+
+class Login(BaseModel):
+    identifier: str
+    password: str
+
+
 collection.create_index("email", unique=True)
+collection.create_index("username", unique=True)
