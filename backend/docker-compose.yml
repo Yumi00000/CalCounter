@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  # Application service
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        requirements_file: requirements/local.txt
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./data:/data
+    env_file: .env
+
+    depends_on:
+      - mongodb
+      - redis
+
+    restart: always
+    networks:
+      - app-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+
+    environment:
+
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+
+    networks:
+      - app-network
+    volumes:
+      - mongo-data:/data/db
+
+
+  redis:
+    image: redis:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    networks:
+      - app-network
+    volumes:
+      - redis-data:/bitnami/redis/data
+    command: /bin/sh -c 'if [ -n "$REDIS_PASS" ]; then redis-server --requirepass "$REDIS_PASS"; else redis-server; fi'
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
+  redis-data:

@@ -19,7 +19,7 @@ build/
 *.freezed.dart
 
 # General
-.env
+backend/.env
 *.log
 *.tmp
 *.bak

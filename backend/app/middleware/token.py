@@ -6,7 +6,9 @@ from backend.app.databade.schemas.token import TokenData
 
 origins = [
     "http://localhost:27017",
+    "http://0.0.0.0:27017",
     "http://localhost:8000",
+    "http://0.0.0.0:8000",
 ]
 
 def create_access_token(data: dict):
