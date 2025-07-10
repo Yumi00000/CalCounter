@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator, model_validator
+from pydantic import BaseModel, EmailStr, field_validator, model_validator, SecretStr
 from typing import Optional, Any
 from datetime import datetime
 from pyobjectID import PyObjectId
@@ -35,7 +35,7 @@ class UserInDB(BaseModel):
     # id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     username: str
     email: EmailStr
-    password: str
+    password: SecretStr
     full_name: Optional[str] = None
     age: int
     weight: Optional[float] = None
@@ -62,11 +62,11 @@ class UserInDB(BaseModel):
 
 
 class UserPublic(BaseModel):
-    username: str
-    weight: float
-    height: int
-    sex: str
-    user_goal_id: PyObjectId
+    username: Optional[str]
+    weight: Optional[float]
+    height: Optional[int]
+    sex: Optional[str]
+    user_goal_id: Optional[PyObjectId]
     created: datetime
 
 
